@@ -32,7 +32,7 @@ app.get('/initialize', async (req, res) => {
             }
         );
         //console.log("here");
-        await driver.executeScript("document.body.style.zoom=1.0").then(() => { console.log("zoomed in") });
+        await driver.executeScript("document.body.style.zoom=1.0").then(() => { console.log("zoomed out") });
 
 
     } catch (e) {
