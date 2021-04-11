@@ -5,6 +5,7 @@ const path = require("path")
 
 const { openWhatsappWeb } = require('./whatsapp-web/initialize');
 const { sendMessage, sendMessageByNumber } = require('./whatsapp-web/sendmessage');
+const { createNewUser, getAllUsers, fetchUser } = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -41,30 +42,18 @@ app.get('/initialize', async (req, res) => {
     }
 })
 
-/* 
-app.post('/sendMessage', async (req, res) => {
+app.post('/sendMessageTextOnly/:id', async (req, res) => {
     try {
-        await sendMessage(req.body.contact, req.body.text, driver).then((output) => {
-            res.send(output);
-        });
-
-    } catch (error) {
-        console.log(e);
-        res.status(500).send({ Error: "Can't send message!" });
-    }
-});
-*/
-
-app.post('/sendMessageTextOnly', async (req, res) => {
-    try {
-        await sendMessageByNumber(req.body.contact, req.body.text, driver).then((output) => {
+        var id = req.params.id;
+        const user = fetchUser(id);
+        let driver = user.driver;
+        await sendMessageByNumber(req.body.contact, req.body.text, id).then((output) => {
             res.send({ output: output });
             driver.navigate().refresh();
 
-
         });
     } catch (error) {
-        console.log(e);
+        console.log(error);
         res.status(500).send({ Error: "Can't send message!" });
     }
 });
