@@ -16,9 +16,9 @@ const openWhatsappWeb = async () => {
         //console.log(driver);
         await driver.get('https://web.whatsapp.com/');
 
-        // var element = driver.findElement(webdriver.By.xpath('//*[@id="app"]/div[1]/div/div[2]/div[1]/div/a'));
-        // driver.executeScript("arguments[0].scrollIntoView()", element);
-        // driver.sleep(300);
+        var element = driver.findElement(webdriver.By.xpath('//*[@id="app"]/div[1]/div/div[2]/div[1]/div/a'));
+        driver.executeScript("arguments[0].scrollIntoView()", element);
+        driver.sleep(300);
         setTimeout(
             async () => {
 
