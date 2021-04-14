@@ -11,14 +11,14 @@ const openWhatsappWeb = async () => {
         driver = new webdriver.Builder().forBrowser('chrome').build();
 
         createNewUser(driver);
-        console.log(getAllUsers());
+        //console.log(getAllUsers());
 
         //console.log(driver);
         await driver.get('https://web.whatsapp.com/');
 
-        var element = driver.findElement(webdriver.By.xpath('//*[@id="app"]/div[1]/div/div[2]/div[1]/div/a'));
-        driver.executeScript("arguments[0].scrollIntoView()", element);
-        driver.sleep(300);
+        // var element = driver.findElement(webdriver.By.xpath('//*[@id="app"]/div[1]/div/div[2]/div[1]/div/a'));
+        // driver.executeScript("arguments[0].scrollIntoView()", element);
+        // driver.sleep(300);
         setTimeout(
             async () => {
 
