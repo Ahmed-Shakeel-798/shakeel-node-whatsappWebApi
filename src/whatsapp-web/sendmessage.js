@@ -18,7 +18,7 @@ const sendMessageByNumber = async (contact, text, id) => {
 
                             (await sendButton).click().then(
                                 async () => {
-                                    console.log("here");
+                                    //console.log("here");
                                     setTimeout(async () => {
                                         const myMessage = await driver.findElement(By.xpath('//*[@class="GDTQm message-out focusable-list-item"]/div/div/div/div[2]/div/div/span'));
                                         const dataIcon = await myMessage.getAttribute("data-icon");
@@ -32,8 +32,9 @@ const sendMessageByNumber = async (contact, text, id) => {
                                         const output = {
                                             message: text,
                                             status,
-                                            dataIcon,
-                                            ariaLabel,
+                                            //dataIcon,
+                                            //ariaLabel,
+                                            check: true,
                                         }
                                         myResolve(output);
                                     }, 1000);
@@ -45,8 +46,10 @@ const sendMessageByNumber = async (contact, text, id) => {
                 }
             );
         } catch (error) {
+            //console.log(error);
             const output = {
                 error: error,
+                check: false
             };
             myResolve(output);
         }

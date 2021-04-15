@@ -5,7 +5,8 @@ const path = require("path")
 
 const { openWhatsappWeb } = require('./whatsapp-web/initialize');
 const { sendMessage, sendMessageByNumber } = require('./whatsapp-web/sendmessage');
-const { createNewUser, getAllUsers, fetchUser } = require('./db');
+const { fetchUser } = require('./db');
+const { fillArray, popMessage, getCurrentMessagesArray } = require('./messages-queue');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -44,6 +45,7 @@ app.get('/initialize', async (req, res) => {
     }
 })
 
+
 app.post('/sendMessageTextOnly/:id', async (req, res) => {
     try {
         var id = req.params.id;
@@ -52,11 +54,22 @@ app.post('/sendMessageTextOnly/:id', async (req, res) => {
             return res.status(500).send({ Error: "No such user" });
         }
         let driver = user.driver;
-        await sendMessageByNumber(req.body.contact, req.body.text, id).then((output) => {
-            res.send({ output: output });
-            driver.navigate().refresh();
 
-        });
+        //fillArray({ contact: req.body.contact, text: req.body.text });
+        while (1) {
+            var check = false;
+            await sendMessageByNumber(req.body.contact, req.body.text, id).then((output) => {
+                if (output.check) {
+                    res.send({ output: output });
+                    check = output.check;
+                    driver.navigate().refresh();
+                }
+            });
+            if (check) {
+                break;
+            }
+        }
+
     } catch (error) {
         console.log(error);
         res.status(500).send({ Error: "Can't send message!" });
