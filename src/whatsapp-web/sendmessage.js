@@ -36,7 +36,7 @@ const sendMessageByNumber = async (contact, text, id) => {
                                             ariaLabel,
                                         }
                                         myResolve(output);
-                                    }, 3000);
+                                    }, 1000);
                                 }
                             );
                         }

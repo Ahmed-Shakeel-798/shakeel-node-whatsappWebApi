@@ -19,8 +19,11 @@ app.get('/initialize', async (req, res) => {
     try {
         await openWhatsappWeb().then(
             (outputObj) => {
+                driverId = outputObj.driverId;
                 driver = outputObj.driver;
+                console.log(driverId);
                 fs.writeFileSync('./src/sc.png', outputObj.output, 'base64');
+                res.set("id", `${driverId}`);
                 res.sendFile(filePath);
                 setTimeout(async () => {
                     fs.unlink('./src/sc.png', (err) => {
@@ -30,9 +33,9 @@ app.get('/initialize', async (req, res) => {
                         console.log("File is deleted.");
                     });
                 }, 1000);
+                driver.executeScript("document.body.style.zoom=1.0").then(() => { console.log("zoomed out") });
             }
         );
-        await driver.executeScript("document.body.style.zoom=1.0").then(() => { console.log("zoomed out") });
 
 
     } catch (e) {
@@ -45,6 +48,9 @@ app.post('/sendMessageTextOnly/:id', async (req, res) => {
     try {
         var id = req.params.id;
         const user = fetchUser(id);
+        if (!user) {
+            return res.status(500).send({ Error: "No such user" });
+        }
         let driver = user.driver;
         await sendMessageByNumber(req.body.contact, req.body.text, id).then((output) => {
             res.send({ output: output });

@@ -26,9 +26,10 @@ let users = [];
 
 let createNewUser = (driver) => {
     var x = Math.floor((Math.random() * 100) + 1);
-    console.log(x);
+    //console.log(x);
     let newUser = new User(x, driver);
     users.push(newUser);
+    return x;
 }
 
 let fetchUser = (id) => {

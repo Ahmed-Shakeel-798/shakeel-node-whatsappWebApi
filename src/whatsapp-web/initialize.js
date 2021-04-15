@@ -10,15 +10,16 @@ const openWhatsappWeb = async () => {
 
         driver = new webdriver.Builder().forBrowser('chrome').build();
 
-        createNewUser(driver);
+        const driverId = createNewUser(driver);
+
         //console.log(getAllUsers());
 
         //console.log(driver);
         await driver.get('https://web.whatsapp.com/');
-
-        var element = driver.findElement(webdriver.By.xpath('//*[@id="app"]/div[1]/div/div[2]/div[1]/div/a'));
-        driver.executeScript("arguments[0].scrollIntoView()", element);
-        driver.sleep(300);
+        // await driver.executeScript("document.body.style.zoom=0.8").then(() => { console.log("zoomed out") });
+        // var element = driver.findElement(webdriver.By.xpath('//*[@id="app"]/div[1]/div/div[2]/div[1]/div/a'));
+        // driver.executeScript("arguments[0].scrollIntoView()", element);
+        // driver.sleep(300);
         setTimeout(
             async () => {
 
@@ -26,9 +27,9 @@ const openWhatsappWeb = async () => {
                     (output) => {
                         const outputObj = {
                             output,
+                            driverId: driverId,
                             driver: driver
                         };
-
                         myResolve(outputObj);
                     }
                 );
