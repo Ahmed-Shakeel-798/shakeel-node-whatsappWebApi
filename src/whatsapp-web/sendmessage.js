@@ -4,6 +4,8 @@ const fs = require("fs");
 const { fetchUser } = require('../db');
 
 const sendMessageByNumber = async (contact, text, driver) => {
+    text = text.replace(/\s/g, '%20');
+    console.log(text);
     const By = webdriver.By;
     return new Promise(async (myResolve, myReject) => {
         try {
@@ -22,9 +24,6 @@ const sendMessageByNumber = async (contact, text, driver) => {
                     //console.log("caught exception");
                 }
             }
-
-
-
 
         } catch (error) {
             console.log(error);
