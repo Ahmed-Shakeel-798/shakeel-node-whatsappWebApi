@@ -56,19 +56,21 @@ app.post('/sendMessageTextOnly/:id', async (req, res) => {
         let driver = user.driver;
 
         //fillArray({ contact: req.body.contact, text: req.body.text });
-        while (1) {
-            var check = false;
-            await sendMessageByNumber(req.body.contact, req.body.text, id).then((output) => {
-                if (output.check) {
-                    res.send({ output: output });
-                    check = output.check;
-                    driver.navigate().refresh();
-                }
-            });
-            if (check) {
-                break;
+        await sendMessageByNumber(req.body.contact, req.body.text, driver).then((output) => {
+            if (output.check) {
+                res.send({ output: output });
+                check = output.check;
+                //driver.navigate().refresh();
             }
-        }
+        });
+        // while (1) {
+        //     var check = false;
+
+        //     break;
+        //     // if (check) {
+        //     //     break;
+        //     // }
+        // }
 
     } catch (error) {
         console.log(error);
