@@ -4,9 +4,9 @@ const fs = require("fs");
 const path = require("path")
 
 const { openWhatsappWeb } = require('./whatsapp-web/initialize');
-const { sendMessage, sendMessageByNumber } = require('./whatsapp-web/sendmessage');
+const { sendMessageByNumber } = require('./whatsapp-web/sendmessage');
 const { fetchUser } = require('./db');
-const { fillArray, popMessage, getCurrentMessagesArray } = require('./messages-queue');
+const { createNewMessage, getAllMessages, popFirst } = require('./components/messages-queue');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -45,7 +45,6 @@ app.get('/initialize', async (req, res) => {
     }
 })
 
-
 app.post('/sendMessageTextOnly/:id', async (req, res) => {
     try {
         var id = req.params.id;
@@ -55,22 +54,49 @@ app.post('/sendMessageTextOnly/:id', async (req, res) => {
         }
         let driver = user.driver;
 
-        //fillArray({ contact: req.body.contact, text: req.body.text });
-        await sendMessageByNumber(req.body.contact, req.body.text, driver).then((output) => {
-            if (output.check) {
-                res.send({ output: output });
-                check = output.check;
-                //driver.navigate().refresh();
-            }
-        });
-        // while (1) {
-        //     var check = false;
+        createNewMessage(req.body.contact, req.body.text, driver);
 
-        //     break;
-        //     // if (check) {
-        //     //     break;
-        //     // }
+        const output = {
+            recieved: "yes",
+            status: "pending"
+        }
+
+        res.send({ output: output })
+
+        //console.log(`current messages queue length: ${getAllMessages().length}`);
+        const myfunc = async () => {
+            if (getAllMessages().length != 0) {
+                const currentMessage = getAllMessages()[0];
+                await sendMessageByNumber(currentMessage.contact, currentMessage.text, currentMessage.driver).then((output) => {
+                    console.log(output.text);
+                    popFirst();
+                    //console.log(`now messages queue length: ${getAllMessages().length}`)
+                    if (getAllMessages().length != 0) {
+                        setTimeout(myfunc, 1000);
+                    }
+                });
+            }
+        }
+        myfunc();
+        // setTimeout(async () => {
+        // if (getAllMessages().length != 0) {
+        //     while (getAllMessages().length != 0) {
+        //         const currentMessage = getAllMessages()[0];
+        //         //console.log(currentMessage.text);
+        //         //popFirst();
+        //         await sendMessageByNumber(currentMessage.contact, currentMessage.text, currentMessage.driver).then((output) => {
+        //             console.log(output.text);
+        //             //driver.navigate().refresh();
+        //             popFirst();
+        //             console.log(`now messages queue length: ${getAllMessages().length}`)
+        //         });
+        //     }
         // }
+        // }, 2000)
+
+
+
+
 
     } catch (error) {
         console.log(error);
@@ -78,6 +104,11 @@ app.post('/sendMessageTextOnly/:id', async (req, res) => {
     }
 });
 
+
+
+const turnOnQueue = async () => {
+
+}
 
 app.listen(PORT, () => {
     console.log(`server up and running on PORT: ${PORT}`);
