@@ -9,6 +9,7 @@ const sendMessageByNumber = async (contact, text, driver) => {
     return new Promise(async (myResolve, myReject) => {
         try {
             await driver.get(`https://web.whatsapp.com/send?phone=${contact}&text=${text}&app_absent=0`);
+            var i = 0;
             while (1) {
                 try {
                     const sendButton = await driver.findElement(By.xpath(`//*[@id="main"]/footer/div[1]/div[3]/button`));
@@ -17,11 +18,15 @@ const sendMessageByNumber = async (contact, text, driver) => {
                         text: text,
                         check: true
                     };
+                    console.log(i);
                     myResolve(output);
                     break;
                 } catch (error) {
-                    //console.log("caught exception");
+                    if (i > 1000) {
+                        throw new Error('please provide a valid number');
+                    }
                 }
+                i++;
             }
 
         } catch (error) {

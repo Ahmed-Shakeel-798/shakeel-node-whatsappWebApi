@@ -68,35 +68,16 @@ app.post('/sendMessageTextOnly/:id', async (req, res) => {
             if (getAllMessages().length != 0) {
                 const currentMessage = getAllMessages()[0];
                 await sendMessageByNumber(currentMessage.contact, currentMessage.text, currentMessage.driver).then((output) => {
-                    console.log(output.text);
+                    //console.log(output.text);
                     popFirst();
                     //console.log(`now messages queue length: ${getAllMessages().length}`)
                     if (getAllMessages().length != 0) {
-                        setTimeout(myfunc, 1000);
+                        setTimeout(myfunc, 100);
                     }
                 });
             }
         }
         myfunc();
-        // setTimeout(async () => {
-        // if (getAllMessages().length != 0) {
-        //     while (getAllMessages().length != 0) {
-        //         const currentMessage = getAllMessages()[0];
-        //         //console.log(currentMessage.text);
-        //         //popFirst();
-        //         await sendMessageByNumber(currentMessage.contact, currentMessage.text, currentMessage.driver).then((output) => {
-        //             console.log(output.text);
-        //             //driver.navigate().refresh();
-        //             popFirst();
-        //             console.log(`now messages queue length: ${getAllMessages().length}`)
-        //         });
-        //     }
-        // }
-        // }, 2000)
-
-
-
-
 
     } catch (error) {
         console.log(error);
