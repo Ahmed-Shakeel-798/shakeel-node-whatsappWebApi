@@ -5,6 +5,7 @@ class Message {
         this.contact = contact;
         this.text = text;
         this.driver = driver;
+        this.status = "pending";
     }
 
     getContact() {
@@ -44,6 +45,9 @@ class MessagesList {
         console.log(`popped a message out of array now length ${this.getAllMessages().length}`);
     }
 
+    // async callSendMessages(){
+
+    // }
 
 
 }

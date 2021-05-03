@@ -58,9 +58,8 @@ app.post('/sendMessageTextOnly/:id', async (req, res) => {
         }
         console.log(`user with id ${user.getId()} was found`);
         let messageListObject = messagesQueue.fetchMessagesListObject(user.getId());
-        messageListObject.createNewMessage(req.body.contact, req.body.text, user.getDriver())
+        messageListObject.createNewMessage(req.body.contact, req.body.text, user.getDriver());
 
-        //createNewMessage(req.body.contact, req.body.text, driver);
 
         const output = {
             recieved: "yes",
@@ -69,27 +68,30 @@ app.post('/sendMessageTextOnly/:id', async (req, res) => {
 
         res.send({ output: output })
 
-        //console.log(`initializing sending message process for user with id: ${user.getId()}`);
-        // if (messageListObject.getAllMessages().length <= 1) {
-        //     messageListObject.sendMessages();
-        // }
 
-        const myfunc = async () => {
+        const myfunc = async (messageListObject) => {
             if (messageListObject.getAllMessages().length != 0) {
                 const currentMessage = messageListObject.getAllMessages()[0];
                 await sendMessageByNumber(currentMessage.contact, currentMessage.text, currentMessage.driver).then((output) => {
-                    if (output.check || !output.check) {
+                    if (output.check) {
                         messageListObject.popFirst();
                         if (messageListObject.getAllMessages().length != 0) {
                             console.log("-------------------------------   calling setTimeout  ---------------------------");
-                            setTimeout(myfunc, 1000);
+                            setTimeout(() => { myfunc(messageListObject) }, 1000);
                         }
+                    }
+                    if (!output.check) {
+                        if (messageListObject.getAllMessages().length != 0) {
+                            console.log("-------------------------------   calling setTimeout  ---------------------------");
+                            setTimeout(() => { myfunc(messageListObject) }, 1000);
+                        }
+
                     }
                 });
             }
         }
         if (messageListObject.getAllMessages().length <= 1) {
-            myfunc();
+            myfunc(messageListObject);
         }
 
 

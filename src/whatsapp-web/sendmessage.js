@@ -22,7 +22,7 @@ const sendMessageByNumber = async (contact, text, driver) => {
             myResolve(output);
 
         } catch (error) {
-            console.log(error);
+            console.log(`message sending failed -----------------------------------`);
             const output = {
                 error: error,
                 check: false
