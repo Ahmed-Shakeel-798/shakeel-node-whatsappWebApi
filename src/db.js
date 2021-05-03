@@ -26,7 +26,6 @@ let users = [];
 
 let createNewUser = (driver) => {
     var x = Math.floor((Math.random() * 100) + 1);
-    //console.log(x);
     let newUser = new User(x, driver);
     users.push(newUser);
     return x;
@@ -34,7 +33,6 @@ let createNewUser = (driver) => {
 
 let fetchUser = (id) => {
     for (let i = 0; i < users.length; i++) {
-        //console.log(users[i].getId())
         if (users[i].getId() == id) {
             return users[i];
         }
