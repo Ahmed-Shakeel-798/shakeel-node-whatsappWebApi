@@ -5,7 +5,7 @@ const path = require("path")
 
 const { openWhatsappWeb } = require('./whatsapp-web/initialize');
 const { sendMessage, sendMessageByNumber } = require('./whatsapp-web/sendmessage');
-const { fetchUser } = require('./db');
+const { createNewUser, fetchUser, deleteDriver } = require('./db');
 const { fillArray, popMessage, getCurrentMessagesArray } = require('./messages-queue');
 
 const app = express();
@@ -16,13 +16,28 @@ app.use(express.json());
 const filePath = path.join(__dirname, '/sc.png');
 var driver;
 
+// craetes a new user id & return it
+app.post('/createUser', async (req, res) => {
+    try {
+        const driverId = createNewUser();
+        console.log(driverId);
+        if (driverId == 404) {
+            throw new Error
+        }
+        res.set("id", `${driverId}`);
+        res.status(200).send({ result: "success" });
+    } catch (error) {
+        console.log(e);
+        res.status(500).send({ Error: "Server error!" });
+    }
+});
+
 app.get('/initialize', async (req, res) => {
     try {
-        await openWhatsappWeb().then(
+        await openWhatsappWeb(req.query.id).then(
             (outputObj) => {
                 driverId = outputObj.driverId;
                 driver = outputObj.driver;
-                console.log(driverId);
                 fs.writeFileSync('./src/sc.png', outputObj.output, 'base64');
                 res.set("id", `${driverId}`);
                 res.sendFile(filePath);
@@ -55,23 +70,24 @@ app.post('/sendMessageTextOnly/:id', async (req, res) => {
         }
         let driver = user.driver;
 
-        //fillArray({ contact: req.body.contact, text: req.body.text });
         await sendMessageByNumber(req.body.contact, req.body.text, driver).then((output) => {
             if (output.check) {
                 res.send({ output: output });
                 check = output.check;
-                //driver.navigate().refresh();
+                // driver.navigate().refresh();
             }
         });
-        // while (1) {
-        //     var check = false;
 
-        //     break;
-        //     // if (check) {
-        //     //     break;
-        //     // }
-        // }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ Error: "Can't send message!" });
+    }
+});
 
+app.delete('/closeSession', (req, res) => {
+    try {
+        deleteDriver(req.query.id);
+        res.status(200).send({ result: "driver deleted" });
     } catch (error) {
         console.log(error);
         res.status(500).send({ Error: "Can't send message!" });

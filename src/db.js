@@ -1,7 +1,14 @@
 class User {
-    constructor(id, driver) {
+    constructor(id) {
         this.id = id;
+    }
+
+    assignDriver(driver) {
         this.driver = driver;
+    };
+
+    deleteDriver() {
+        this.driver = null;
     }
 
     isUser(id) {
@@ -24,19 +31,47 @@ class User {
 
 let users = [];
 
-let createNewUser = (driver) => {
-    var x = Math.floor((Math.random() * 100) + 1);
-    //console.log(x);
-    let newUser = new User(x, driver);
-    users.push(newUser);
-    return x;
+let createNewUser = () => {
+    if (users.length >= 100) {
+        return 404;
+    }
+    while (1) {
+        var x = Math.floor((Math.random() * 100) + 1);
+        let alreadyEXISTS = false;
+        for (let i = 0; i < users.length; i++) {
+            if (users[i].getId() == x) {
+                alreadyEXISTS = true;
+            }
+        }
+        if (!alreadyEXISTS) {
+            let newUser = new User(x);
+            users.push(newUser);
+            return newUser.id;
+        }
+    }
 }
 
 let fetchUser = (id) => {
     for (let i = 0; i < users.length; i++) {
-        //console.log(users[i].getId())
         if (users[i].getId() == id) {
+            console.log("found ----------------------");
             return users[i];
+        }
+    }
+}
+
+let assignDriver = (id, driver) => {
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].getId() == id) {
+            users[i].assignDriver(driver);
+        }
+    }
+}
+
+let deleteDriver = (id) => {
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].getId() == id) {
+            users[i].deleteDriver();
         }
     }
 }
@@ -46,7 +81,9 @@ let getAllUsers = () => {
 }
 
 module.exports = {
-    createNewUser: createNewUser,
-    getAllUsers: getAllUsers,
-    fetchUser: fetchUser,
+    createNewUser,
+    getAllUsers,
+    fetchUser,
+    assignDriver,
+    deleteDriver
 }

@@ -21,7 +21,7 @@ const sendMessageByNumber = async (contact, text, driver) => {
                     myResolve(output);
                     break;
                 } catch (error) {
-                    //console.log("caught exception");
+
                 }
             }
 
