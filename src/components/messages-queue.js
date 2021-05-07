@@ -45,11 +45,6 @@ class MessagesList {
         console.log(`popped a message out of array now length ${this.getAllMessages().length}`);
     }
 
-    // async callSendMessages(){
-
-    // }
-
-
 }
 
 
