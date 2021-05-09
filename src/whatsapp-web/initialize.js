@@ -10,10 +10,15 @@ const openWhatsappWeb = async (id) => {
         console.log(id);
         const user = fetchUser(parseInt(id));
         if (!user) {
-            // console.log(user.id)
-            console.log("caught -------------------------------");
             const output = {
                 error: "user not found",
+                check: false
+            };
+            return myReject(output);
+        }
+        if (user.isAssigned == true) {
+            const output = {
+                error: "driver already exists",
                 check: false
             };
             return myReject(output);

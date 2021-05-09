@@ -1,14 +1,18 @@
 class User {
     constructor(id) {
         this.id = id;
+        this.isAssigned = false;
     }
 
     assignDriver(driver) {
         this.driver = driver;
+        this.isAssigned = true;
     };
 
     deleteDriver() {
+        this.driver.close();
         this.driver = null;
+        this.isAssigned = false;
     }
 
     isUser(id) {
